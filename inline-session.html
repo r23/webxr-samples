@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <!-- Chrome Origin Trial token for https://immersive-web.github.io.
     Enables WebXR for all visitors by default during the trial period -->
-    <meta http-equiv="origin-trial" content="AsRrvyQjAl9rU6y9LjRT0zG1MSdLR8WLtEtvZlroYAASlD4y5T0pWay1oL+NR9g6oxoahdrVHq3YEz+dVK1cBwMAAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3MDA1Mjg3OH0=">
+    <meta http-equiv="origin-trial" content="Ai3OQL0dmGNhrOkQWS8ffWkjPqXrhzAejLV80DiBTIM5V5xTRleI9qOcdjK9+ILQmKqMamH3FtDKIeLsfjgYUQ8AAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3NTQxNzU5OX0=">
   </head>
   <body>
     <header>
@@ -95,7 +95,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (value == 90) {
           label += ' (default)';
         }
-        fovLabel.innerHTML = label;
+        fovLabel.textContent = label;
       }
       fov.addEventListener('change', updateFov);
 
@@ -120,8 +120,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         document.querySelector('header').appendChild(xrButton.domElement);
 
         if (navigator.xr) {
-          navigator.xr.supportsSession('immersive-vr').then(() => {
-            xrButton.enabled = true;
+          navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+            xrButton.enabled = supported;
           });
 
           // Start up an inline session, which should always be supported on
@@ -135,7 +135,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       function onRequestSession() {
-        navigator.xr.requestSession('immersive-vr').then((session) => {
+        return navigator.xr.requestSession('immersive-vr').then((session) => {
           xrButton.setSession(session);
           // Set a flag on the session so we can differentiate it from the
           // inline session.
@@ -176,7 +176,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           scene.setRenderer(renderer);
         }
         
-        // WebGL layers for inline sessions won't allocat their own framebuffer,
+        // WebGL layers for inline sessions won't allocate their own framebuffer,
         // which causes gl commands to naturally execute against the default
         // framebuffer while still using the canvas dimensions to compute
         // viewports and projection matrices.

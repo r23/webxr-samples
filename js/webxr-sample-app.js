@@ -33,7 +33,8 @@ export class WebXRSampleApp {
       immersiveMode: options.immersiveMode || 'immersive-vr',
       referenceSpace: options.referenceSpace || 'local',
       defaultInputHandling: 'defaultInputHandling' in options ? options.defaultInputHandling : true,
-      controllerMesh: options.controllerMesh
+      controllerMesh: options.controllerMesh,
+      leftControllerMesh: options.leftControllerMesh
     };
 
     this.gl = null;
@@ -41,7 +42,7 @@ export class WebXRSampleApp {
     this.scene = new Scene();
 
     this.xrButton = new WebXRButton({
-      onRequestSession: () => { this.onRequestSession(); },
+      onRequestSession: () => { return this.onRequestSession(); },
       onEndSession: (session) => { this.onEndSession(session); }
     });
 
@@ -71,8 +72,8 @@ export class WebXRSampleApp {
 
   onInitXR() {
     if (navigator.xr) {
-      navigator.xr.supportsSession('immersive-vr').then(() => {
-        this.xrButton.enabled = true;
+      navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+        this.xrButton.enabled = supported;
       });
 
       // Request an inline session if needed.
@@ -114,12 +115,15 @@ export class WebXRSampleApp {
       if (this.options.controllerMesh) {
         this.scene.inputRenderer.setControllerMesh(this.options.controllerMesh);
       }
+      if (this.options.leftControllerMesh) {
+        this.scene.inputRenderer.setControllerMesh(this.options.leftControllerMesh, 'left');
+      }
     }
   }
 
   onRequestSession() {
     // Called when the button gets clicked. Requests an immersive session.
-    navigator.xr.requestSession(this.options.immersiveMode, {
+    return navigator.xr.requestSession(this.options.immersiveMode, {
         requiredFeatures: [this.options.referenceSpace]
     }).then((session) => {
       this.xrButton.setSession(session);

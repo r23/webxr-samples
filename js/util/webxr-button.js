@@ -199,6 +199,7 @@ const generateCSS = (options, fontSize=18)=> {
         position: relative;
 
         cursor: pointer;
+        transition: border 0.5s;
     }
 
     button.${cssPrefix}-button:focus {
@@ -241,6 +242,7 @@ const generateCSS = (options, fontSize=18)=> {
         font-size: ${fontSize}px;
         padding-left: ${height * 1.05}px;
         padding-right: ${(borderRadius - 10 < 5) ? height / 3 : borderRadius - 10}px;
+        transition: color 0.5s;
     }
 
     /*
@@ -257,6 +259,28 @@ const generateCSS = (options, fontSize=18)=> {
 
     button.${cssPrefix}-button[disabled=true] > .${cssPrefix}-logo > .${cssPrefix}-svg-error {
         display:initial;
+    }
+
+    /*
+    * error
+    */
+
+    button.${cssPrefix}-button[error=true] {
+        animation: errorShake 0.4s;
+    }
+
+    @keyframes errorShake {
+      0% { transform: translate(1px, 0) }
+      10% { transform: translate(-2px, 0) }
+      20% { transform: translate(2px, 0) }
+      30% { transform: translate(-2px, 0) }
+      40% { transform: translate(2px, 0) }
+      50% { transform: translate(-2px, 0) }
+      60% { transform: translate(2px, 0) }
+      70% { transform: translate(-2px, 0) }
+      80% { transform: translate(2px, 0) }
+      90% { transform: translate(-1px, 0) }
+      100% { transform: translate(0px, 0) }
     }
   `);
 };
@@ -449,7 +473,24 @@ export class WebXRButton {
     if (this.session) {
       this.options.onEndSession(this.session);
     } else if (this._enabled) {
-      this.options.onRequestSession();
+      let requestPromise = this.options.onRequestSession();
+      if (requestPromise) {
+        requestPromise.catch((err) => {
+          // Reaching this point indicates that the session request has failed
+          // and we should communicate that to the user somehow.
+          let errorMsg = `XRSession creation failed: ${err.message}`;
+          this.setTooltip(errorMsg);
+          console.error(errorMsg);
+
+          // Disable the button momentarily to indicate there was an issue.
+          this.__setDisabledAttribute(true);
+          this.domElement.setAttribute('error', 'true');
+          setTimeout(() => {
+            this.__setDisabledAttribute(false);
+            this.domElement.setAttribute('error', 'false');
+          }, 1000);
+        });
+      }
     }
   }
 

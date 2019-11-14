@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <!-- Chrome Origin Trial token for https://immersive-web.github.io.
     Enables WebXR for all visitors by default during the trial period -->
-    <meta http-equiv="origin-trial" content="AsRrvyQjAl9rU6y9LjRT0zG1MSdLR8WLtEtvZlroYAASlD4y5T0pWay1oL+NR9g6oxoahdrVHq3YEz+dVK1cBwMAAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3MDA1Mjg3OH0=">
+    <meta http-equiv="origin-trial" content="Ai3OQL0dmGNhrOkQWS8ffWkjPqXrhzAejLV80DiBTIM5V5xTRleI9qOcdjK9+ILQmKqMamH3FtDKIeLsfjgYUQ8AAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3NTQxNzU5OX0=">
   </head>
   <body>
     <header>
@@ -91,8 +91,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (navigator.xr) {
           // If the device allows creation of exclusive sessions set it as the
           // target of the 'Enter XR' button.
-          navigator.xr.supportsSession('immersive-vr').then(() => {
-            xrButton.enabled = true;
+          navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+            xrButton.enabled = supported;
           });
         }
       }
@@ -100,7 +100,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // Called when the user selects a device to present to. In response we
       // will request an exclusive session from that device.
       function onRequestSession() {
-        navigator.xr.requestSession('immersive-vr').then(onSessionStarted);
+        return navigator.xr.requestSession('immersive-vr').then(onSessionStarted);
       }
 
       // Called when we've successfully acquired a XRSession. In response we

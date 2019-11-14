@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <!-- Chrome Origin Trial token for https://immersive-web.github.io.
     Enables WebXR for all visitors by default during the trial period -->
-    <meta http-equiv="origin-trial" content="AsRrvyQjAl9rU6y9LjRT0zG1MSdLR8WLtEtvZlroYAASlD4y5T0pWay1oL+NR9g6oxoahdrVHq3YEz+dVK1cBwMAAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3MDA1Mjg3OH0=">
+    <meta http-equiv="origin-trial" content="Ai3OQL0dmGNhrOkQWS8ffWkjPqXrhzAejLV80DiBTIM5V5xTRleI9qOcdjK9+ILQmKqMamH3FtDKIeLsfjgYUQ8AAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3NTQxNzU5OX0=">
   </head>
   <body>
     <header>
@@ -71,11 +71,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         if (navigator.xr) {
           // If the device allows creation of exclusive sessions set it as the
           // target of the 'Enter XR' button.
-          navigator.xr.supportsSession('immersive-vr').then(() => {
-            // Updates the button to start an XR session when clicked.
-            xrButton.addEventListener('click', onButtonClicked);
-            xrButton.innerHTML = 'Enter XR';
-            xrButton.disabled = false;
+          navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+            if (supported) {
+              // Updates the button to start an XR session when clicked.
+              xrButton.addEventListener('click', onButtonClicked);
+              xrButton.textContent = 'Enter XR';
+              xrButton.disabled = false;
+            }
           });
         }
       }
@@ -94,7 +96,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // will set up the necessary session state and kick off the frame loop.
       function onSessionStarted(session) {
         xrSession = session;
-        xrButton.innerHTML = 'Exit XR';
+        xrButton.textContent = 'Exit XR';
 
         // Listen for the sessions 'end' event so we can respond if the user
         // or UA ends the session for any reason.
@@ -127,7 +129,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // discarded.
       function onSessionEnded(event) {
         xrSession = null;
-        xrButton.innerHTML = 'Enter VR';
+        xrButton.textContent = 'Enter VR';
 
         // In this simple case discard the WebGL context too, since we're not
         // rendering anything else to the screen with it.
