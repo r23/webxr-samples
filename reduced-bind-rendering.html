@@ -30,10 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <link rel='stylesheet' href='css/common.css'>
 
     <title>Reduced Bind Rendering</title>
-
-    <!-- Chrome Origin Trial token for https://immersive-web.github.io.
-    Enables WebXR for all visitors by default during the trial period -->
-    <meta http-equiv="origin-trial" content="Ai3OQL0dmGNhrOkQWS8ffWkjPqXrhzAejLV80DiBTIM5V5xTRleI9qOcdjK9+ILQmKqMamH3FtDKIeLsfjgYUQ8AAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3NTQxNzU5OX0=">
   </head>
   <body>
     <header>
@@ -170,7 +166,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
           // This is a different rendering pattern than the previous samples
-          // used, but it should be more efficent. It's very common for apps
+          // used, but it should be more efficient. It's very common for apps
           // being ported to XR to take existing 2D rendering code and call the
           // top-level "drawScene" function once per XR view, effectively
           // drawing a single eye at a time. However, this causes many state

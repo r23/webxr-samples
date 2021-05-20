@@ -30,10 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <link rel='stylesheet' href='css/common.css'>
 
     <title>Teleportation</title>
-
-    <!-- Chrome Origin Trial token for https://immersive-web.github.io.
-    Enables WebXR for all visitors by default during the trial period -->
-    <meta http-equiv="origin-trial" content="Ai3OQL0dmGNhrOkQWS8ffWkjPqXrhzAejLV80DiBTIM5V5xTRleI9qOcdjK9+ILQmKqMamH3FtDKIeLsfjgYUQ8AAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3NTQxNzU5OX0=">
   </head>
   <body>
     <header>
@@ -44,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           XRSession reference space. Select a point on the floor with a
           controller to teleport to it. Select the leftmost box to rotate to the
           left by 30 degrees. Selecting the rightmost box rotates the viewer by
-          30 degress to the right. Select the middle box to reset the
+          30 degrees to the right. Select the middle box to reset the
           viewer orientation.
           <a class="back" href="./index.html">Back</a>
         </p>
@@ -170,8 +166,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         renderer = new Renderer(gl);
 
         scene.setRenderer(renderer);
-        scene.inputRenderer.setControllerMesh(new Gltf2Node({url: 'media/gltf/controller/controller.gltf'}), 'right');
-        scene.inputRenderer.setControllerMesh(new Gltf2Node({url: 'media/gltf/controller/controller-left.gltf'}), 'left');
 
         // Create several boxes to use for hit testing.
         addBox(-1.0, 1.6, -1.3, 1.0, 0.0, 0.0, boxes);
@@ -186,7 +180,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       function onRequestSession() {
         return navigator.xr.requestSession('immersive-vr', {
-            requiredFeatures: ['local-floor'] 
+            requiredFeatures: ['local-floor']
         }).then((session) => {
           xrButton.setSession(session);
           session.isImmersive = true;
@@ -202,6 +196,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         session.addEventListener('select', onSelect);
 
         initGL();
+        scene.inputRenderer.useProfileControllerMeshes(session);
 
         let glLayer = new XRWebGLLayer(session, gl);
         session.updateRenderState({ baseLayer: glLayer });
@@ -255,7 +250,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // position while keeping their orientation the same.
       // Otherwise, check if one of the boxes was selected and update the
       // user's orientation accordingly:
-      //    left box: turn left by 30 degress
+      //    left box: turn left by 30 degrees
       //    center box: reset orientation
       //    right box: turn right by 30 degrees
       function onSelect(ev) {
@@ -322,7 +317,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         // then transformed back into world space using the inverse of the
         // new originOffset. This simplifies to a rotation of the old player
         // offset by (new angle - old angle):
-        //   worldOffsetNew = inv(rot_of(originoffsetNew)) * rot_of(originoffsetOld) * worldOffsetOld
+        //   worldOffsetNew = inv(rot_of(originOffsetNew)) * rot_of(originOffsetOld) * worldOffsetOld
         //       = inv(rotY(-angleNew)) * rotY(-angleOld) * worldOffsetOld
         //       = rotY(angleNew) * rotY(-angleOld) * worldOffsetOld
         //       = rotY(angleNew - angleOld) * worldOffsetOld

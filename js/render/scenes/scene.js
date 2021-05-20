@@ -26,11 +26,11 @@ import {vec3, quat} from '../math/gl-matrix.js';
 import {Ray} from '../math/ray.js';
 
 export class WebXRView extends RenderView {
-  constructor(view, layer) {
+  constructor(view, layer, viewport) {
     super(
       view ? view.projectionMatrix : null,
       view ? view.transform : null,
-      (layer && view) ? layer.getViewport(view) : null,
+      viewport ? viewport : ((layer && view) ? layer.getViewport(view) : null),
       view ? view.eye : 'left'
     );
   }
@@ -118,17 +118,17 @@ export class Scene extends Node {
       } else {
         // Statically render the cursor 1 meters down the ray since we didn't
         // hit anything selectable.
-        let targetRay = new Ray(targetRayPose.transform);
+        let targetRay = new Ray(targetRayPose.transform.matrix);
         let cursorDistance = 1.0;
         let cursorPos = vec3.fromValues(
-            targetRay.origin.x,
-            targetRay.origin.y,
-            targetRay.origin.z
+            targetRay.origin[0], //x
+            targetRay.origin[1], //y
+            targetRay.origin[2]  //z
             );
         vec3.add(cursorPos, cursorPos, [
-            targetRay.direction.x * cursorDistance,
-            targetRay.direction.y * cursorDistance,
-            targetRay.direction.z * cursorDistance,
+            targetRay.direction[0] * cursorDistance,
+            targetRay.direction[1] * cursorDistance,
+            targetRay.direction[2] * cursorDistance,
             ]);
         // let cursorPos = vec3.fromValues(0, 0, -1.0);
         // vec3.transformMat4(cursorPos, cursorPos, inputPose.targetRay);
@@ -143,7 +143,7 @@ export class Scene extends Node {
           this.inputRenderer.addController(gripPose.transform.matrix, inputSource.handedness);
         }
       }
-      
+
 
     }
 
@@ -237,12 +237,24 @@ export class Scene extends Node {
     let session = xrFrame.session;
     // Assumed to be a XRWebGLLayer for now.
     let layer = session.renderState.baseLayer;
+    if (!layer)
+      layer = session.renderState.layers[0];
+    else {
+      // only baseLayer has framebuffer and we need to bind it
+      // even if it is null (for inline sessions)
+      gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
+    }
 
     if (!gl) {
       return;
     }
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
+    if (layer.colorTexture) {
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, layer.colorTexture, 0);
+    }
+    if (layer.depthStencilTexture) {
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, layer.depthStencilTexture, 0);
+    }
 
     if (this.clear) {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

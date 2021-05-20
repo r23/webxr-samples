@@ -32,10 +32,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <title>Positional Audio</title>
 
     <script src="https://cdn.jsdelivr.net/npm/resonance-audio/build/resonance-audio.min.js"></script>
-
-    <!-- Chrome Origin Trial token for https://immersive-web.github.io.
-    Enables WebXR for all visitors by default during the trial period -->
-    <meta http-equiv="origin-trial" content="Ai3OQL0dmGNhrOkQWS8ffWkjPqXrhzAejLV80DiBTIM5V5xTRleI9qOcdjK9+ILQmKqMamH3FtDKIeLsfjgYUQ8AAABfeyJvcmlnaW4iOiJodHRwczovL2ltbWVyc2l2ZS13ZWIuZ2l0aHViLmlvOjQ0MyIsImZlYXR1cmUiOiJXZWJYUkRldmljZU03NiIsImV4cGlyeSI6MTU3NTQxNzU5OX0=">
   </head>
   <body>
     <header>
@@ -98,7 +94,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       audioContext.suspend();
 
       // TODO: This is crashing in recent versions of Resonance for me, and I'm
-      // not sure why. It does run succesfully without it, though.
+      // not sure why. It does run successfully without it, though.
       // Rough room dimensions in meters (estimated from model in Blender.)
       /*let roomDimensions = {
         width : 6,
@@ -150,7 +146,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       function createBufferSource(source, buffer, analyser) {
         // Create a buffer source. This will need to be recreated every time
-        // we wish to start the audio, see 
+        // we wish to start the audio, see
         // https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode
         let bufferSource = audioContext.createBufferSource();
         bufferSource.loop = true;
@@ -320,13 +316,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         renderer = new Renderer(gl);
         scene.setRenderer(renderer);
-        scene.inputRenderer.setControllerMesh(new Gltf2Node({url: 'media/gltf/controller/controller.gltf'}), 'right');
-        scene.inputRenderer.setControllerMesh(new Gltf2Node({url: 'media/gltf/controller/controller-left.gltf'}), 'left');
       }
 
       function onRequestSession() {
         return navigator.xr.requestSession('immersive-vr', {
-            requiredFeatures: ['local-floor'] 
+            requiredFeatures: ['local-floor']
         }).then((session) => {
           xrButton.setSession(session);
           session.isImmersive = true;
@@ -347,6 +341,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         });
 
         initGL();
+        scene.inputRenderer.useProfileControllerMeshes(session);
 
         let glLayer = new XRWebGLLayer(session, gl);
         session.updateRenderState({ baseLayer: glLayer });

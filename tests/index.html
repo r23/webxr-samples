@@ -90,8 +90,10 @@
       <header class='header'>
         <div id='nav'>
             <a href='../'>Samples</a>
+            <a href='../layers-samples/'>Layers Samples</a>
             <a href='../proposals/'>Proposals</a>
             <a href='./' class='selected'>Test Pages</a>
+            <a href='../report/'>Report</a>
         </div>
 
         <h1>
@@ -128,6 +130,22 @@
             { title: 'Sponza', category: 'Lots-o-Polys',
               path: 'sponza.html',
               description: 'Loads a larger scene than other samples for performance testing. (Warning: Can be slow on mobile devices!)' },
+
+            { title: 'Composed Views', category: 'We Like Matrix Math',
+              path: 'composed-views.html',
+              description: 'Tests a scenario where views are composed from a combination of viewer and local-floor space.' },
+
+            { title: 'Reference Space Invert', category: 'We Hate Matrix Math',
+              path: 'ref-space-invert.html',
+              description: 'Tests creating an offset reference space with the viewer pose, which should cancel out the pose and report the viewer at the origin.' },
+
+            { title: 'Interrupted AR', category: 'Exceptions!',
+              path: 'interrupted-ar.html',
+              description: 'Tests what happens when an exception is thrown in promise resolve of an `immersive-ar` session request.' },
+
+              { title: 'Sparse Frames', category: 'M_ss_ng Fr_m_s',
+              path: 'sparse-frames.html',
+              description: 'Tests what happens the framebuffer is not populated every frame.' },
           ];
 
           let mainElement = document.getElementById("main");
@@ -165,8 +183,8 @@
 
             if (!page.noPolyfill) {
               let polyfillLink = document.createElement('a');
-              polyfillLink.href = page.path + '?usePolyfill=1';
-              polyfillLink.textContent = 'Run with Polyfill';
+              polyfillLink.href = page.path + '?usePolyfill=0';
+              polyfillLink.textContent = 'Run Without Polyfill';
               links.appendChild(polyfillLink);
             }
 
